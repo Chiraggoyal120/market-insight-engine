@@ -34,6 +34,16 @@ export default defineConfig(({ mode }) => {
     },
     proxy: proxy || undefined,
   },
+  build: {
+    outDir: "dist",
+    sourcemap: false,
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
+  },
   plugins: [
     react(),
     mode === "development" && componentTagger(),
