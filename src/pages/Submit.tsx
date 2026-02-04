@@ -115,6 +115,10 @@ const Submit = () => {
 
       setSuccess(true);
 
+      // Save productId to localStorage for recovery if user refreshes
+      localStorage.setItem('lastProductId', productId);
+      localStorage.setItem('productSubmitTime', new Date().toISOString());
+
       // Redirect after 2 seconds
       setTimeout(() => {
         navigate(`/results/${productId}`);

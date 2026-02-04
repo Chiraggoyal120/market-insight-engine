@@ -28,7 +28,16 @@ const loadingSteps = [
 ];
 
 const Results = () => {
-  const { productId } = useParams<{ productId: string }>();
+  let { productId } = useParams<{ productId: string }>();
+  
+  // If no productId in URL, try to recover from localStorage
+  if (!productId) {
+    const savedProductId = localStorage.getItem('lastProductId');
+    if (savedProductId) {
+      productId = savedProductId;
+    }
+  }
+  
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
@@ -162,6 +171,32 @@ const Results = () => {
   const handleDownload = () => {
     window.print();
   };
+
+  // If no productId, show error
+  if (!productId) {
+    return (
+      <div className="min-h-screen bg-background px-6 py-12">
+        <div className="mx-auto max-w-2xl">
+          <Link to="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-8">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Home
+          </Link>
+          <Card className="shadow-lg">
+            <CardContent className="py-12">
+              <div className="flex flex-col items-center text-center">
+                <AlertCircle className="h-12 w-12 text-destructive mb-4" />
+                <h2 className="text-xl font-bold text-foreground mb-2">Invalid Request</h2>
+                <p className="text-muted-foreground mb-4">No product ID found. Please submit a product first.</p>
+                <Link to="/submit">
+                  <Button>Submit New Product</Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
