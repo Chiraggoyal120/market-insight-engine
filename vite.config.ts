@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
+import fs from "fs";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -33,9 +34,23 @@ export default defineConfig(({ mode }) => {
       overlay: false,
     },
     proxy: proxy || undefined,
-    middlewareMode: false,
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [
+    react(),
+    mode === "development" && componentTagger(),
+    {
+      name: "spa-fallback",
+      configResolved() {},
+      apply: "serve",
+      enforce: "post",
+      middleware(req, res, next) {
+        if (!req.url.includes(".") && req.url !== "/" && !req.url.includes("@")) {
+          req.url = "/index.html";
+        }
+        next();
+      },
+    },
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
