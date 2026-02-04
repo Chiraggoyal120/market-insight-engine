@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
           },
         };
       } catch {
-        return {};
+        return undefined;
       }
     })();
 
@@ -50,13 +50,23 @@ export default defineConfig(({ mode }) => {
     {
       name: "spa-fallback",
       configResolved() {},
-      apply: "serve",
-      enforce: "post",
-      middleware(req, res, next) {
-        if (!req.url.includes(".") && req.url !== "/" && !req.url.includes("@")) {
-          req.url = "/index.html";
-        }
-        next();
+      configureServer(server) {
+        // Development mode fallback - directly add middleware
+        server.middlewares.use((req, _res, next) => {
+          if (req.url && !req.url.includes(".") && req.url !== "/" && !req.url.includes("@")) {
+            req.url = "/index.html";
+          }
+          next();
+        });
+      },
+      configurePreviewServer(server) {
+        // ✅ CRITICAL FIX: Preview mode fallback (for production builds)
+        server.middlewares.use((req, _res, next) => {
+          if (req.url && !req.url.includes(".") && req.url !== "/" && !req.url.includes("@")) {
+            req.url = "/index.html";
+          }
+          next();
+        });
       },
     },
   ].filter(Boolean),
