@@ -33,12 +33,17 @@ export default defineConfig(({ mode }) => {
       overlay: false,
     },
     proxy: proxy || undefined,
+    middlewareMode: false,
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  preview: {
+    host: "::",
+    port: 8080,
   },
   };
 });
