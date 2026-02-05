@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { 
-  ArrowLeft, 
-  Loader2, 
-  CheckCircle, 
-  Download, 
-  Target, 
+import {
+  ArrowLeft,
+  Loader2,
+  CheckCircle,
+  Download,
+  Target,
   TrendingUp,
   MessageSquare,
   Calendar,
@@ -29,7 +29,7 @@ const loadingSteps = [
 
 const Results = () => {
   let { productId } = useParams<{ productId: string }>();
-  
+
   // If no productId in URL, try to recover from localStorage
   if (!productId) {
     const savedProductId = localStorage.getItem('lastProductId');
@@ -37,7 +37,7 @@ const Results = () => {
       productId = savedProductId;
     }
   }
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
@@ -47,7 +47,7 @@ const Results = () => {
   useEffect(() => {
     if (!productId) return;
 
-    let interval: NodeJS.Timeout;
+    let interval: any;
 
     const checkStatus = async () => {
       try {
@@ -88,8 +88,7 @@ const Results = () => {
       } catch (err) {
         console.error("Error checking status:", err);
         setError(
-          `Unexpected error checking status: ${
-            err instanceof Error ? err.message : String(err)
+          `Unexpected error checking status: ${err instanceof Error ? err.message : String(err)
           }`
         );
         setIsLoading(false);
@@ -107,7 +106,7 @@ const Results = () => {
           .maybeSingle();
 
         if (productError) throw productError;
-        
+
         // Cast to Product type since Supabase types aren't set up yet
         setProduct(productData as unknown as Product);
 
@@ -161,7 +160,7 @@ const Results = () => {
 
     // Initial check
     checkStatus();
-    
+
     // Poll every 10 seconds
     interval = setInterval(checkStatus, 10000);
 
@@ -378,8 +377,8 @@ const Results = () => {
                       <ul className="list-disc list-inside space-y-1">
                         {(positioning.positioning_data?.core_messaging?.key_differentiators ?? []).map(
                           (diff, i) => (
-                          <li key={i} className="text-foreground">{diff}</li>
-                        ))}
+                            <li key={i} className="text-foreground">{diff}</li>
+                          ))}
                       </ul>
                     </div>
                   </div>
